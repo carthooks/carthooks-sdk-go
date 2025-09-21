@@ -259,7 +259,7 @@ func (c *Client) DeleteSubItem(appID, collectionID, itemID, fieldID, subItemID u
 
 // CreateConnection creates a new hooklet connection
 func (c *Client) CreateConnection(appID uint, request *CreateConnectionRequest) *Result {
-	path := fmt.Sprintf("/api/v1/apps/%d/connections", appID)
+	path := fmt.Sprintf("/v1/apps/%d/connections", appID)
 
 	resp, err := c.makeRequest("POST", path, request, nil)
 	if err != nil {
@@ -274,7 +274,7 @@ func (c *Client) CreateConnection(appID uint, request *CreateConnectionRequest) 
 
 // CreateConnectionLog creates a new connection log entry
 func (c *Client) CreateConnectionLog(appID, connectionID uint, request *CreateConnectionLogRequest) *Result {
-	path := fmt.Sprintf("/api/v1/apps/%d/connections/%d/logs", appID, connectionID)
+	path := fmt.Sprintf("/v1/apps/%d/connections/%d/logs", appID, connectionID)
 
 	resp, err := c.makeRequest("POST", path, request, nil)
 	if err != nil {
@@ -289,7 +289,7 @@ func (c *Client) CreateConnectionLog(appID, connectionID uint, request *CreateCo
 
 // CreateConnectionUsage creates a new connection usage record
 func (c *Client) CreateConnectionUsage(appID, connectionID uint, request *CreateConnectionUsageRequest) *Result {
-	path := fmt.Sprintf("/api/v1/apps/%d/connections/%d/usage", appID, connectionID)
+	path := fmt.Sprintf("/v1/apps/%d/connections/%d/usage", appID, connectionID)
 
 	resp, err := c.makeRequest("POST", path, request, nil)
 	if err != nil {

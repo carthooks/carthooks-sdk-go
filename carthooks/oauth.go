@@ -30,7 +30,7 @@ func (c *Client) GetOAuthToken(request *OAuthTokenRequest) *Result {
 	}
 
 	// Create a custom request for form data
-	resp, err := c.makeFormRequest("POST", "/api/oauth/token", formData)
+	resp, err := c.makeFormRequest("POST", "/oauth/token", formData)
 	if err != nil {
 		return &Result{
 			Success: false,
@@ -154,7 +154,7 @@ func (c *Client) ExchangeAuthorizationCode(code, redirectURI string) *Result {
 
 // GetOAuthAuthorizeCode gets OAuth authorization code (requires authentication)
 func (c *Client) GetOAuthAuthorizeCode(request *OAuthAuthorizeCodeRequest) *Result {
-	resp, err := c.makeRequest("POST", "/api/oauth/get-authorize-code", request, nil)
+	resp, err := c.makeRequest("POST", "/oauth/get-authorize-code", request, nil)
 	if err != nil {
 		return &Result{
 			Success: false,
@@ -167,7 +167,7 @@ func (c *Client) GetOAuthAuthorizeCode(request *OAuthAuthorizeCodeRequest) *Resu
 
 // GetCurrentUser gets current user information (requires OAuth token)
 func (c *Client) GetCurrentUser() *Result {
-	resp, err := c.makeRequest("GET", "/api/v1/me", nil, nil)
+	resp, err := c.makeRequest("GET", "/v1/me", nil, nil)
 	if err != nil {
 		return &Result{
 			Success: false,
