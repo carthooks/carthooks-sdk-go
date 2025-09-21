@@ -128,3 +128,57 @@ type CreateConnectionLogRequest struct {
 type CreateConnectionUsageRequest struct {
 	Usage int64 `json:"usage"`
 }
+
+// OAuth related types
+
+// OAuthConfig holds OAuth configuration
+type OAuthConfig struct {
+	ClientID     string `json:"client_id"`
+	ClientSecret string `json:"client_secret"`
+	RefreshToken string `json:"refresh_token,omitempty"`
+	AutoRefresh  bool   `json:"auto_refresh"`
+}
+
+// OAuthTokens represents OAuth token response
+type OAuthTokens struct {
+	AccessToken  string `json:"access_token"`
+	TokenType    string `json:"token_type"`
+	ExpiresIn    int    `json:"expires_in"`
+	RefreshToken string `json:"refresh_token,omitempty"`
+	Scope        string `json:"scope"`
+}
+
+// OAuthTokenRequest represents OAuth token request
+type OAuthTokenRequest struct {
+	GrantType       string `json:"grant_type"`
+	ClientID        string `json:"client_id"`
+	ClientSecret    string `json:"client_secret"`
+	UserAccessToken string `json:"user_access_token,omitempty"`
+	Code            string `json:"code,omitempty"`
+	RedirectURI     string `json:"redirect_uri,omitempty"`
+	RefreshToken    string `json:"refresh_token,omitempty"`
+}
+
+// OAuthAuthorizeCodeRequest represents OAuth authorization code request
+type OAuthAuthorizeCodeRequest struct {
+	ClientID       string `json:"client_id"`
+	RedirectURI    string `json:"redirect_uri"`
+	State          string `json:"state"`
+	TargetTenantID uint   `json:"target_tenant_id,omitempty"`
+}
+
+// OAuthAuthorizeCodeResponse represents OAuth authorization code response
+type OAuthAuthorizeCodeResponse struct {
+	RedirectURL string `json:"redirect_url"`
+}
+
+// UserInfo represents current user information
+type UserInfo struct {
+	UserID     uint     `json:"user_id"`
+	Username   string   `json:"username"`
+	Email      string   `json:"email"`
+	TenantID   uint     `json:"tenant_id"`
+	TenantName string   `json:"tenant_name"`
+	IsAdmin    bool     `json:"is_admin"`
+	Scope      []string `json:"scope"`
+}

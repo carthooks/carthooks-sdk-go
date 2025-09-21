@@ -18,15 +18,19 @@ type ClientConfig struct {
 	Timeout     time.Duration
 	Headers     map[string]string
 	Debug       bool
+	OAuth       *OAuthConfig
 }
 
 // Client represents the Carthooks API client
 type Client struct {
-	baseURL     string
-	accessToken string
-	httpClient  *http.Client
-	headers     map[string]string
-	debug       bool
+	baseURL        string
+	accessToken    string
+	httpClient     *http.Client
+	headers        map[string]string
+	debug          bool
+	oauthConfig    *OAuthConfig
+	currentTokens  *OAuthTokens
+	tokenExpiresAt *time.Time
 }
 
 // NewClient creates a new Carthooks client with the given configuration
@@ -82,7 +86,7 @@ func NewClient(config *ClientConfig) *Client {
 		headers["Authorization"] = "Bearer " + accessToken
 	}
 
-	return &Client{
+	client := &Client{
 		baseURL:     baseURL,
 		accessToken: accessToken,
 		httpClient: &http.Client{
@@ -91,6 +95,22 @@ func NewClient(config *ClientConfig) *Client {
 		headers: headers,
 		debug:   debug,
 	}
+
+	// Set OAuth configuration if provided
+	if config.OAuth != nil {
+		client.oauthConfig = &OAuthConfig{
+			ClientID:     config.OAuth.ClientID,
+			ClientSecret: config.OAuth.ClientSecret,
+			RefreshToken: config.OAuth.RefreshToken,
+			AutoRefresh:  config.OAuth.AutoRefresh,
+		}
+		// Default auto refresh to true if not specified
+		if client.oauthConfig.AutoRefresh == false && config.OAuth.RefreshToken != "" {
+			client.oauthConfig.AutoRefresh = true
+		}
+	}
+
+	return client
 }
 
 // SetAccessToken sets the access token for API authentication

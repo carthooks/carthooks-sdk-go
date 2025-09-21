@@ -21,24 +21,83 @@ import (
 )
 
 func main() {
-    // Initialize client
+    // Initialize client with OAuth (recommended)
     client := carthooks.NewClient(&carthooks.ClientConfig{
-        BaseURL:     "https://api.carthooks.com",
-        AccessToken: "your-access-token",
-        Debug:       true,
+        BaseURL: "https://api.carthooks.com",
+        OAuth: &carthooks.OAuthConfig{
+            ClientID:     "dvc-your-client-id",
+            ClientSecret: "dvs-your-client-secret",
+            AutoRefresh:  true,
+        },
+        Debug: true,
     })
+
+    // Initialize OAuth
+    result := client.InitializeOAuth()
+    if !result.Success {
+        log.Fatalf("OAuth initialization failed: %s", result.Error)
+    }
+
+    // Or use direct access token (legacy)
+    // client := carthooks.NewClient(&carthooks.ClientConfig{
+    //     BaseURL:     "https://api.carthooks.com",
+    //     AccessToken: "your-access-token",
+    //     Debug:       true,
+    // })
     
     // Get items from a collection
-    result := client.GetItems(123456, 789012, 20, 0, nil)
-    if result.Success {
+    itemsResult := client.GetItems(123456, 789012, 20, 0, nil)
+    if itemsResult.Success {
         var records []carthooks.RecordFormat
-        if err := result.GetData(&records); err == nil {
+        if err := itemsResult.GetData(&records); err == nil {
             fmt.Printf("Found %d items\n", len(records))
         }
     } else {
-        log.Printf("Error: %s", result.Error)
+        log.Printf("Error: %s", itemsResult.Error)
     }
 }
+```
+
+## Authentication
+
+### OAuth 2.0 (Recommended)
+
+The SDK supports OAuth 2.0 authentication with automatic token refresh:
+
+```go
+client := carthooks.NewClient(&carthooks.ClientConfig{
+    BaseURL: "https://api.carthooks.com",
+    OAuth: &carthooks.OAuthConfig{
+        ClientID:     "dvc-your-client-id",
+        ClientSecret: "dvs-your-client-secret",
+        AutoRefresh:  true,
+    },
+})
+
+// Initialize OAuth
+result := client.InitializeOAuth()
+if !result.Success {
+    log.Fatalf("OAuth failed: %s", result.Error)
+}
+
+// All API calls will automatically refresh tokens as needed
+```
+
+**Supported OAuth Flows:**
+- ✅ Client Credentials (machine-to-machine)
+- ✅ Client Credentials + User Token (server-side apps)
+- ✅ Authorization Code Flow (web applications)
+- ✅ Automatic Token Refresh
+
+See [OAuth-README.md](OAuth-README.md) for complete OAuth documentation and examples.
+
+### Direct Access Token (Legacy)
+
+```go
+client := carthooks.NewClient(&carthooks.ClientConfig{
+    BaseURL:     "https://api.carthooks.com",
+    AccessToken: "your-access-token",
+})
 ```
 
 ## Configuration
@@ -47,7 +106,7 @@ func main() {
 
 ```bash
 export CARTHOOKS_API_URL="https://api.carthooks.com"
-export CARTHOOKS_ACCESS_TOKEN="your-access-token"
+export CARTHOOKS_ACCESS_TOKEN="your-access-token"  # For legacy auth
 export CARTHOOKS_TIMEOUT="30s"
 export CARTHOOKS_SDK_DEBUG="true"
 ```
@@ -57,7 +116,12 @@ export CARTHOOKS_SDK_DEBUG="true"
 ```go
 config := &carthooks.ClientConfig{
     BaseURL:     "https://api.carthooks.com",
-    AccessToken: "your-access-token",
+    AccessToken: "your-access-token",  // Legacy auth
+    OAuth: &carthooks.OAuthConfig{     // OAuth auth (recommended)
+        ClientID:     "dvc-your-client-id",
+        ClientSecret: "dvs-your-client-secret",
+        AutoRefresh:  true,
+    },
     Timeout:     30 * time.Second,
     Headers: map[string]string{
         "Custom-Header": "value",

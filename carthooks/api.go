@@ -82,6 +82,14 @@ func (c *Client) GetItemByID(appID, collectionID, itemID uint, fields []string) 
 
 // QueryItems queries items with advanced filtering and sorting
 func (c *Client) QueryItems(appID, collectionID uint, options *QueryOptions) *Result {
+	// Ensure valid token before making request
+	if err := c.EnsureValidToken(); err != nil {
+		return &Result{
+			Success: false,
+			Error:   fmt.Sprintf("token refresh failed: %v", err),
+		}
+	}
+
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items/query", appID, collectionID)
 
 	resp, err := c.makeRequest("POST", path, options, nil)
