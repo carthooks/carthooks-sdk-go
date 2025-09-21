@@ -3,10 +3,10 @@ package carthooks
 import "strconv"
 
 type UrlSets struct {
-	//3种尺寸， 原始尺寸， 128x128px,  26x26px
-	FullSizeUrl string `json:"full_size_url"` //原始尺寸
-	ThumbUrl    string `json:"thumb_url"`     //128x128px
-	IconUrl     string `json:"icon_url"`      //26x26px
+	// Three sizes: original size, 128x128px, 26x26px
+	FullSizeUrl string `json:"full_size_url"` // Original size
+	ThumbUrl    string `json:"thumb_url"`     // 128x128px
+	IconUrl     string `json:"icon_url"`      // 26x26px
 }
 
 type ApiImageResult struct {
@@ -54,4 +54,77 @@ func (e *EventMessageMeta) ToMap() map[string]string {
 		"trigger_type":  e.TriggerType,
 		"trigger_name":  e.TriggerName,
 	}
+}
+
+// Connection represents a hooklet connection
+type Connection struct {
+	ID          uint   `json:"id"`
+	TenantID    uint   `json:"tenant_id"`
+	AppID       uint   `json:"app_id"`
+	HookletID   uint   `json:"hooklet_id"`
+	DevClientID uint   `json:"dev_client_id"`
+	Title       string `json:"title"`
+	Status      uint8  `json:"status"`
+	IconUrl     string `json:"icon_url"`
+	Description string `json:"description"`
+	CreatedAt   string `json:"created_at"`
+	UpdatedAt   string `json:"updated_at"`
+}
+
+// ConnectionStatus represents connection status constants
+type ConnectionStatus uint8
+
+const (
+	ConnectionStatusPending  ConnectionStatus = 0
+	ConnectionStatusActive   ConnectionStatus = 1
+	ConnectionStatusInactive ConnectionStatus = 2
+)
+
+// ConnectionLog represents a connection log entry
+type ConnectionLog struct {
+	ID           uint   `json:"id"`
+	TenantID     uint   `json:"tenant_id"`
+	ConnectionID uint   `json:"connection_id"`
+	Status       uint8  `json:"status"`
+	Message      string `json:"message"`
+	CreatedAt    string `json:"created_at"`
+}
+
+// ConnectionLogStatus represents connection log status constants
+type ConnectionLogStatus uint8
+
+const (
+	ConnectionLogStatusCreated ConnectionLogStatus = 1
+	ConnectionLogStatusUpdated ConnectionLogStatus = 2
+	ConnectionLogStatusWarn    ConnectionLogStatus = 3
+	ConnectionLogStatusError   ConnectionLogStatus = 4
+)
+
+// ConnectionUsage represents connection usage data
+type ConnectionUsage struct {
+	ID           uint   `json:"id"`
+	TenantID     uint   `json:"tenant_id"`
+	ConnectionID uint   `json:"connection_id"`
+	Usage        int64  `json:"usage"`
+	CreatedAt    string `json:"created_at"`
+}
+
+// CreateConnectionRequest represents the request body for creating a connection
+type CreateConnectionRequest struct {
+	HookletID   uint   `json:"hooklet_id"`
+	DevClientID uint   `json:"dev_client_id"`
+	Title       string `json:"title"`
+	IconUrl     string `json:"icon_url,omitempty"`
+	Description string `json:"description,omitempty"`
+}
+
+// CreateConnectionLogRequest represents the request body for creating a connection log
+type CreateConnectionLogRequest struct {
+	Status  uint8  `json:"status"`
+	Message string `json:"message"`
+}
+
+// CreateConnectionUsageRequest represents the request body for creating connection usage
+type CreateConnectionUsageRequest struct {
+	Usage int64 `json:"usage"`
 }

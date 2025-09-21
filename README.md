@@ -228,6 +228,65 @@ watchOptions := &carthooks.WatchDataOptions{
 result := client.StartWatchData(watchOptions)
 ```
 
+### Connection Management
+
+The SDK provides comprehensive support for managing hooklet connections:
+
+```go
+// Create a new connection
+connectionReq := &carthooks.CreateConnectionRequest{
+    HookletID:   123,
+    DevClientID: 456,
+    Title:       "My Integration Connection",
+    IconUrl:     "https://example.com/icon.png",
+    Description: "This connection integrates with external service",
+}
+
+result := client.CreateConnection(appID, connectionReq)
+if result.Success {
+    var connection carthooks.Connection
+    if err := result.ParseData(&connection); err == nil {
+        fmt.Printf("Connection created: ID=%d, Title=%s\n", connection.ID, connection.Title)
+    }
+}
+
+// Create connection log entries
+logReq := &carthooks.CreateConnectionLogRequest{
+    Status:  uint8(carthooks.ConnectionLogStatusCreated),
+    Message: "Connection established successfully",
+}
+
+logResult := client.CreateConnectionLog(appID, connectionID, logReq)
+
+// Record connection usage
+usageReq := &carthooks.CreateConnectionUsageRequest{
+    Usage: 100, // Record 100 usage units
+}
+
+usageResult := client.CreateConnectionUsage(appID, connectionID, usageReq)
+```
+
+#### Connection Status Constants
+
+```go
+const (
+    ConnectionStatusPending  ConnectionStatus = 0
+    ConnectionStatusActive   ConnectionStatus = 1
+    ConnectionStatusInactive ConnectionStatus = 2
+)
+```
+
+#### Connection Log Status Constants
+
+```go
+const (
+    ConnectionLogStatusCreated ConnectionLogStatus = 1
+    ConnectionLogStatusUpdated ConnectionLogStatus = 2
+    ConnectionLogStatusWarn    ConnectionLogStatus = 3
+    ConnectionLogStatusError   ConnectionLogStatus = 4
+)
+```
+
 ## Error Handling
 
 ```go

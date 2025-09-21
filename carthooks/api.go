@@ -7,10 +7,10 @@ import (
 
 // QueryOptions represents options for querying items
 type QueryOptions struct {
-	Pagination *PaginationOptions         `json:"pagination,omitempty"`
-	Filters    map[string]interface{}     `json:"filters,omitempty"`
-	Sort       []string                   `json:"sort,omitempty"`
-	Fields     []string                   `json:"fields,omitempty"`
+	Pagination *PaginationOptions     `json:"pagination,omitempty"`
+	Filters    map[string]interface{} `json:"filters,omitempty"`
+	Sort       []string               `json:"sort,omitempty"`
+	Fields     []string               `json:"fields,omitempty"`
 }
 
 // PaginationOptions represents pagination parameters
@@ -30,17 +30,17 @@ type LockOptions struct {
 // GetItems retrieves items from a collection with pagination
 func (c *Client) GetItems(appID, collectionID uint, limit, start int, options map[string]string) *Result {
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items", appID, collectionID)
-	
+
 	params := map[string]string{
 		"pagination[start]": strconv.Itoa(start),
 		"pagination[limit]": strconv.Itoa(limit),
 	}
-	
+
 	// Add additional options
 	for k, v := range options {
 		params[k] = v
 	}
-	
+
 	resp, err := c.makeRequest("GET", path, nil, params)
 	if err != nil {
 		return &Result{
@@ -48,14 +48,14 @@ func (c *Client) GetItems(appID, collectionID uint, limit, start int, options ma
 			Error:   err.Error(),
 		}
 	}
-	
+
 	return c.parseResponse(resp)
 }
 
 // GetItemByID retrieves a specific item by ID
 func (c *Client) GetItemByID(appID, collectionID, itemID uint, fields []string) *Result {
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items/%d", appID, collectionID, itemID)
-	
+
 	params := map[string]string{}
 	if len(fields) > 0 {
 		// Convert fields slice to comma-separated string
@@ -68,7 +68,7 @@ func (c *Client) GetItemByID(appID, collectionID, itemID uint, fields []string) 
 		}
 		params["fields"] = fieldsStr
 	}
-	
+
 	resp, err := c.makeRequest("GET", path, nil, params)
 	if err != nil {
 		return &Result{
@@ -76,14 +76,14 @@ func (c *Client) GetItemByID(appID, collectionID, itemID uint, fields []string) 
 			Error:   err.Error(),
 		}
 	}
-	
+
 	return c.parseResponse(resp)
 }
 
 // QueryItems queries items with advanced filtering and sorting
 func (c *Client) QueryItems(appID, collectionID uint, options *QueryOptions) *Result {
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items/query", appID, collectionID)
-	
+
 	resp, err := c.makeRequest("POST", path, options, nil)
 	if err != nil {
 		return &Result{
@@ -91,18 +91,18 @@ func (c *Client) QueryItems(appID, collectionID uint, options *QueryOptions) *Re
 			Error:   err.Error(),
 		}
 	}
-	
+
 	return c.parseResponse(resp)
 }
 
 // CreateItem creates a new item in a collection
 func (c *Client) CreateItem(appID, collectionID uint, data map[string]interface{}) *Result {
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items", appID, collectionID)
-	
+
 	body := map[string]interface{}{
 		"data": data,
 	}
-	
+
 	resp, err := c.makeRequest("POST", path, body, nil)
 	if err != nil {
 		return &Result{
@@ -110,18 +110,18 @@ func (c *Client) CreateItem(appID, collectionID uint, data map[string]interface{
 			Error:   err.Error(),
 		}
 	}
-	
+
 	return c.parseResponse(resp)
 }
 
 // UpdateItem updates an existing item
 func (c *Client) UpdateItem(appID, collectionID, itemID uint, data map[string]interface{}) *Result {
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items/%d", appID, collectionID, itemID)
-	
+
 	body := map[string]interface{}{
 		"data": data,
 	}
-	
+
 	resp, err := c.makeRequest("PUT", path, body, nil)
 	if err != nil {
 		return &Result{
@@ -129,14 +129,14 @@ func (c *Client) UpdateItem(appID, collectionID, itemID uint, data map[string]in
 			Error:   err.Error(),
 		}
 	}
-	
+
 	return c.parseResponse(resp)
 }
 
 // DeleteItem deletes an item from a collection
 func (c *Client) DeleteItem(appID, collectionID, itemID uint) *Result {
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items/%d", appID, collectionID, itemID)
-	
+
 	resp, err := c.makeRequest("DELETE", path, nil, nil)
 	if err != nil {
 		return &Result{
@@ -144,14 +144,14 @@ func (c *Client) DeleteItem(appID, collectionID, itemID uint) *Result {
 			Error:   err.Error(),
 		}
 	}
-	
+
 	return c.parseResponse(resp)
 }
 
 // LockItem locks an item to prevent concurrent modifications
 func (c *Client) LockItem(appID, collectionID, itemID uint, options *LockOptions) *Result {
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items/%d/lock", appID, collectionID, itemID)
-	
+
 	body := map[string]interface{}{}
 	if options != nil {
 		if options.LockTimeout > 0 {
@@ -164,7 +164,7 @@ func (c *Client) LockItem(appID, collectionID, itemID uint, options *LockOptions
 			body["lockSubject"] = options.Subject
 		}
 	}
-	
+
 	resp, err := c.makeRequest("POST", path, body, nil)
 	if err != nil {
 		return &Result{
@@ -172,19 +172,19 @@ func (c *Client) LockItem(appID, collectionID, itemID uint, options *LockOptions
 			Error:   err.Error(),
 		}
 	}
-	
+
 	return c.parseResponse(resp)
 }
 
 // UnlockItem unlocks a previously locked item
 func (c *Client) UnlockItem(appID, collectionID, itemID uint, lockID string) *Result {
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items/%d/unlock", appID, collectionID, itemID)
-	
+
 	body := map[string]interface{}{}
 	if lockID != "" {
 		body["lockId"] = lockID
 	}
-	
+
 	resp, err := c.makeRequest("POST", path, body, nil)
 	if err != nil {
 		return &Result{
@@ -192,18 +192,18 @@ func (c *Client) UnlockItem(appID, collectionID, itemID uint, lockID string) *Re
 			Error:   err.Error(),
 		}
 	}
-	
+
 	return c.parseResponse(resp)
 }
 
 // CreateSubItem creates a sub-item in a subform field
 func (c *Client) CreateSubItem(appID, collectionID, itemID, fieldID uint, data map[string]interface{}) *Result {
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items/%d/subform/%d", appID, collectionID, itemID, fieldID)
-	
+
 	body := map[string]interface{}{
 		"data": data,
 	}
-	
+
 	resp, err := c.makeRequest("POST", path, body, nil)
 	if err != nil {
 		return &Result{
@@ -211,18 +211,18 @@ func (c *Client) CreateSubItem(appID, collectionID, itemID, fieldID uint, data m
 			Error:   err.Error(),
 		}
 	}
-	
+
 	return c.parseResponse(resp)
 }
 
 // UpdateSubItem updates a sub-item in a subform field
 func (c *Client) UpdateSubItem(appID, collectionID, itemID, fieldID, subItemID uint, data map[string]interface{}) *Result {
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items/%d/subform/%d/items/%d", appID, collectionID, itemID, fieldID, subItemID)
-	
+
 	body := map[string]interface{}{
 		"data": data,
 	}
-	
+
 	resp, err := c.makeRequest("PUT", path, body, nil)
 	if err != nil {
 		return &Result{
@@ -230,14 +230,14 @@ func (c *Client) UpdateSubItem(appID, collectionID, itemID, fieldID, subItemID u
 			Error:   err.Error(),
 		}
 	}
-	
+
 	return c.parseResponse(resp)
 }
 
 // DeleteSubItem deletes a sub-item from a subform field
 func (c *Client) DeleteSubItem(appID, collectionID, itemID, fieldID, subItemID uint) *Result {
 	path := fmt.Sprintf("/v1/apps/%d/collections/%d/items/%d/subform/%d/items/%d", appID, collectionID, itemID, fieldID, subItemID)
-	
+
 	resp, err := c.makeRequest("DELETE", path, nil, nil)
 	if err != nil {
 		return &Result{
@@ -245,6 +245,51 @@ func (c *Client) DeleteSubItem(appID, collectionID, itemID, fieldID, subItemID u
 			Error:   err.Error(),
 		}
 	}
-	
+
+	return c.parseResponse(resp)
+}
+
+// CreateConnection creates a new hooklet connection
+func (c *Client) CreateConnection(appID uint, request *CreateConnectionRequest) *Result {
+	path := fmt.Sprintf("/v1/apps/%d/connections", appID)
+
+	resp, err := c.makeRequest("POST", path, request, nil)
+	if err != nil {
+		return &Result{
+			Success: false,
+			Error:   err.Error(),
+		}
+	}
+
+	return c.parseResponse(resp)
+}
+
+// CreateConnectionLog creates a new connection log entry
+func (c *Client) CreateConnectionLog(appID, connectionID uint, request *CreateConnectionLogRequest) *Result {
+	path := fmt.Sprintf("/v1/apps/%d/connections/%d/logs", appID, connectionID)
+
+	resp, err := c.makeRequest("POST", path, request, nil)
+	if err != nil {
+		return &Result{
+			Success: false,
+			Error:   err.Error(),
+		}
+	}
+
+	return c.parseResponse(resp)
+}
+
+// CreateConnectionUsage creates a new connection usage record
+func (c *Client) CreateConnectionUsage(appID, connectionID uint, request *CreateConnectionUsageRequest) *Result {
+	path := fmt.Sprintf("/v1/apps/%d/connections/%d/usage", appID, connectionID)
+
+	resp, err := c.makeRequest("POST", path, request, nil)
+	if err != nil {
+		return &Result{
+			Success: false,
+			Error:   err.Error(),
+		}
+	}
+
 	return c.parseResponse(resp)
 }
