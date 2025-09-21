@@ -385,3 +385,4 @@ func TestGetCurrentUser(t *testing.T) {
 		t.Fatal("GetCurrentUser should return user data")
 	}
 }
+
