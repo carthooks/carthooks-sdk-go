@@ -111,11 +111,11 @@ type ConnectionUsage struct {
 
 // CreateConnectionRequest represents the request body for creating a connection
 type CreateConnectionRequest struct {
-	HookletID   uint   `json:"hooklet_id"`
-	DevClientID uint   `json:"dev_client_id"`
-	Title       string `json:"title"`
-	IconUrl     string `json:"icon_url,omitempty"`
-	Description string `json:"description,omitempty"`
+	HookletID    string `json:"hooklet_id"`
+	Title        string `json:"title"`
+	IconUrl      string `json:"icon_url,omitempty"`
+	Description  string `json:"description,omitempty"`
+	VendorTaskID string `json:"vendor_task_id"`
 }
 
 // CreateConnectionLogRequest represents the request body for creating a connection log
