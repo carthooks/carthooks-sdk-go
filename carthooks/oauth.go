@@ -178,6 +178,19 @@ func (c *Client) GetCurrentUser() *Result {
 	return c.parseResponse(resp)
 }
 
+// GetUserTenants gets user's tenants (requires OAuth token)
+func (c *Client) GetUserTenants() *Result {
+	resp, err := c.makeRequest("GET", "/v1/tenants", nil, nil)
+	if err != nil {
+		return &Result{
+			Success: false,
+			Error:   err.Error(),
+		}
+	}
+
+	return c.parseResponse(resp)
+}
+
 // EnsureValidToken checks if token needs refresh and refreshes if necessary
 func (c *Client) EnsureValidToken() error {
 	if c.oauthConfig == nil || !c.oauthConfig.AutoRefresh || c.tokenExpiresAt == nil {
