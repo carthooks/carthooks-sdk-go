@@ -49,11 +49,12 @@ type User struct {
 
 // WatchDataOptions represents options for watching data changes
 type WatchDataOptions struct {
-	EndpointURL      string                 `json:"endpoint_url"`
-	EndpointType     string                 `json:"endpoint_type"`
-	Name             string                 `json:"name"`
-	AppID            uint                   `json:"app_id"`
+	EndpointURL      string                 `json:"endpoint_url,omitempty"`
+	EndpointType     string                 `json:"endpoint_type,omitempty"`
+	Name             string                 `json:"name,omitempty"`
+	AppID            uint                   `json:"app_id,omitempty"`
 	CollectionID     uint                   `json:"collection_id"`
+	ConnectionID     string                 `json:"connection_id,omitempty"` // For StopWatchData
 	Filters          map[string]interface{} `json:"filters,omitempty"`
 	Age              int                    `json:"age,omitempty"`
 	WatchStartTime   int64                  `json:"watch_start_time,omitempty"`
