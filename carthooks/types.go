@@ -129,6 +129,14 @@ type CreateConnectionUsageRequest struct {
 	Usage int64 `json:"usage"`
 }
 
+// UpdateConnectionRequest represents the request body for updating a connection
+type UpdateConnectionRequest struct {
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
+	Status      string `json:"status,omitempty"` // "active", "inactive"
+	IconUrl     string `json:"icon_url,omitempty"`
+}
+
 // OAuth related types
 
 // OAuthConfig holds OAuth configuration

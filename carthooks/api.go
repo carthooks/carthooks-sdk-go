@@ -301,3 +301,63 @@ func (c *Client) CreateConnectionUsage(appID, connectionID uint, request *Create
 
 	return c.parseResponse(resp)
 }
+
+// UpdateConnection updates an existing connection
+func (c *Client) UpdateConnection(appID, connectionID uint, request *UpdateConnectionRequest) *Result {
+	path := fmt.Sprintf("/v1/apps/%d/connections/%d", appID, connectionID)
+
+	resp, err := c.makeRequest("PUT", path, request, nil)
+	if err != nil {
+		return &Result{
+			Success: false,
+			Error:   err.Error(),
+		}
+	}
+
+	return c.parseResponse(resp)
+}
+
+// GetConnection retrieves a connection by ID
+func (c *Client) GetConnection(appID, connectionID uint) *Result {
+	path := fmt.Sprintf("/v1/apps/%d/connections/%d", appID, connectionID)
+
+	resp, err := c.makeRequest("GET", path, nil, nil)
+	if err != nil {
+		return &Result{
+			Success: false,
+			Error:   err.Error(),
+		}
+	}
+
+	return c.parseResponse(resp)
+}
+
+// DeleteConnection deletes a connection
+func (c *Client) DeleteConnection(appID, connectionID uint) *Result {
+	path := fmt.Sprintf("/v1/apps/%d/connections/%d", appID, connectionID)
+
+	resp, err := c.makeRequest("DELETE", path, nil, nil)
+	if err != nil {
+		return &Result{
+			Success: false,
+			Error:   err.Error(),
+		}
+	}
+
+	return c.parseResponse(resp)
+}
+
+// StopWatchData stops watching data changes
+func (c *Client) StopWatchData(options *WatchDataOptions) *Result {
+	path := "/v1/watch-data"
+
+	resp, err := c.makeRequest("DELETE", path, options, nil)
+	if err != nil {
+		return &Result{
+			Success: false,
+			Error:   err.Error(),
+		}
+	}
+
+	return c.parseResponse(resp)
+}
