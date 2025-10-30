@@ -28,7 +28,7 @@ type ClientInterface interface {
 	UpdateItem(appID, collectionID, itemID uint, data map[string]interface{}) *Result
 	DeleteItem(appID, collectionID, itemID uint) *Result
 	LockItem(appID, collectionID, itemID uint, options *LockOptions) *Result
-	UnlockItem(appID, collectionID, itemID, lockID string) *Result
+	UnlockItem(appID, collectionID, itemID uint, lockID string) *Result
 	
 	// SubItem methods
 	CreateSubItem(appID, collectionID, itemID, fieldID uint, data map[string]interface{}) *Result
