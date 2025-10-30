@@ -119,6 +119,11 @@ func (c *Client) SetAccessToken(token string) {
 	c.headers["Authorization"] = "Bearer " + token
 }
 
+// GetBaseURL returns the base URL for the Carthooks API
+func (c *Client) GetBaseURL() string {
+	return c.baseURL
+}
+
 // makeRequest performs an HTTP request and returns the response
 func (c *Client) makeRequest(method, path string, body interface{}, params map[string]string) (*http.Response, error) {
 	// Build URL
